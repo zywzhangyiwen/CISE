@@ -47,15 +47,15 @@ const ModeratorDashboard: React.FC<ModeratorDashboardProps> = ({ articles }) => 
         const data = await res.json();
         if (Array.isArray(data)) {
           const mappedData: Article[] = data.map((a: any) => ({
-            _id: a.id,
+            _id: a._id || a.id,
             title: a.title,
             authors: Array.isArray(a.authors) ? a.authors : String(a.authors || "").split(',').map(s => s.trim()),
-            journal: a.source,
-            year: Number(a.pubyear),
+            journal: a.source || a.journal || '',
+            year: Number(a.pubyear || a.year || 0),
             doi: a.doi,
             claim: a.claim,
             evidence: a.evidence,
-            status: a.moderationStatus,
+            status: a.moderationStatus || a.status,
           }));
           setArticlesState(mappedData);
           if (mappedData.length > 0) setSelected(mappedData[0]);

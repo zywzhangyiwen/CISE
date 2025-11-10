@@ -1,5 +1,5 @@
 import { GetServerSideProps, NextPage } from 'next';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { API_BASE_URL, getAuthJson, putAuthJson } from '../../utils/api';
 import { decodeToken, getTokenFromCookieStr } from '../../utils/auth';
 
@@ -40,21 +40,29 @@ const AnalystPage: NextPage<Props> = ({ token, pending }) => {
     participantType: string;
   } }>({});
 
-  const initForm = (a: Article) => {
-    if (form[a._id]) return;
-    const sePractice = a.sePractice || PRACTICES[0];
-    const claim = a.claim || (CLAIMS[sePractice]?.[0] || '');
-    setForm(prev => ({
-      ...prev,
-      [a._id]: {
-        sePractice,
-        claim,
-        result: RESULTS[0],
-        researchType: RESEARCH_TYPES[0],
-        participantType: PARTICIPANTS[1],
-      }
-    }));
-  };
+  // Initialize forms for all articles when list changes
+  useEffect(() => {
+    list.forEach(a => {
+      setForm(prev => {
+        // Only initialize if not already present
+        if (prev[a._id]) {
+          return prev;
+        }
+        const sePractice = a.sePractice || PRACTICES[0];
+        const claim = a.claim || (CLAIMS[sePractice]?.[0] || '');
+        return {
+          ...prev,
+          [a._id]: {
+            sePractice,
+            claim,
+            result: RESULTS[0],
+            researchType: RESEARCH_TYPES[0],
+            participantType: PARTICIPANTS[1],
+          }
+        };
+      });
+    });
+  }, [list]);
 
   const save = async (id: string) => {
     if (!token) {
@@ -86,7 +94,6 @@ const AnalystPage: NextPage<Props> = ({ token, pending }) => {
               <div style={{ color: '#666' }}>DOI: {a.doi}</div>
             </div>
 
-            {initForm(a)}
             <div className="grid grid-5" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8 }}>
               <div>
                 <label className="label">SE Practice</label>
