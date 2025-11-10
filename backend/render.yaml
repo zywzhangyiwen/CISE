@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: speed-backend
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+    # 在 Render Dashboard 中添加以下环境变量:
+    # - MONGODB_URI
+    # - JWT_SECRET
+    # - CORS_ORIGIN
+
