@@ -1,0 +1,95 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.form {
+  display: flex;
+  flex-direction: column;
+  max-width: 30em;
+}
+
+.formItem {
+  padding: 1em;
+  margin: 1em 0;
+  flex-grow: 1;
+}
+
+.formTextArea {
+  @extend .formItem;
+  min-height: 8em;
+}
+
+.arrayItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: stretch;
+}
+
+.buttonItem {
+  width: 3rem;
+  height: 3rem;
+  flex-grow: 0;
+  font-size: 1.5em;
+}
+
+/* UI utilities */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e7e7e7;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #d0d7de;
+  background: #f6f8fa;
+  color: #1f2328;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.btn:hover { background: #eef1f4; }
+.btn:disabled { opacity: .6; cursor: not-allowed; }
+.btn-primary { background: #2563eb; border-color: #2563eb; color: #fff; }
+.btn-primary:hover { background: #1e40af; border-color: #1e40af; }
+.btn-secondary { background: #f1f5f9; }
+
+.input, .select {
+  width: 100%;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 14px;
+  background: #fff;
+}
+.label { display: block; font-size: 12px; color: #475569; margin-bottom: 6px; }
+
+.grid { display: grid; gap: 12px; }
+.grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.grid-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+
+.table { width: 100%; border-collapse: collapse; }
+.table thead th { background: #f8fafc; text-align: left; padding: 10px; border-bottom: 1px solid #e5e7eb; }
+.table tbody td { padding: 10px; border-bottom: 1px solid #f1f5f9; }
+.table tbody tr:nth-child(odd) { background: #fbfdff; }
+
+.muted { color: #64748b; }
+.space-y > * + * { margin-top: 12px; }
+
+.stars button { border: none; background: transparent; cursor: pointer; color: #d1d5db; font-size: 18px; padding: 0; }
+.stars button.active { color: #f59e0b; }
