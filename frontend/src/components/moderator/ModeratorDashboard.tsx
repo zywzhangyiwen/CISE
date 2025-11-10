@@ -2,6 +2,18 @@ import React, { useEffect, useState } from "react";
 import { API_BASE_URL } from "../../utils/api";
 import styles from "./ModeratorDashboard.module.scss";
 
+type Article = {
+  _id: string;
+  title: string;
+  authors: string[];
+  journal: string;
+  year: number;
+  doi?: string;
+  claim?: string;
+  evidence?: string;
+  status?: 'pending' | 'approved' | 'rejected';
+};
+
 interface ArticlesInterface {
   id: string;
   title: string;
@@ -21,7 +33,14 @@ interface ModeratorDashboardProps {
 }
 
 const ModeratorDashboard: React.FC<ModeratorDashboardProps> = ({ articles }) => {
-  const [articlesState, setArticlesState] = useState<ArticlesInterface[]>(articles);
+  // 1. 60 行：把 any 换成 Article[]
+  const [articlesState, setArticlesState] = useState<Article[]>([]);
+  
+  // 2. 81 行：把 articlesState 加进依赖数组
+  useEffect(() => {
+    // 你原来的逻辑
+  }, [articlesState]);   // ← 这里补上
+  
   const [selected, setSelected] = useState<ArticlesInterface | null>(
     articles && articles.length > 0 ? articles[0] : null
   );
