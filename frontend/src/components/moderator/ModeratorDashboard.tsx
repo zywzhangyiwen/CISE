@@ -1,47 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { API_BASE_URL } from "../../utils/api";
 import styles from "./ModeratorDashboard.module.scss";
+import { Article } from "../../models/Article"; // <--- 关键改动：导入共享类型
 
-type Article = {
-  _id: string;
-  title: string;
-  authors: string[];
-  journal: string;
-  year: number;
-  doi?: string;
-  claim?: string;
-  evidence?: string;
-  status?: 'pending' | 'approved' | 'rejected';
-};
-
-interface ArticlesInterface {
-  id: string;
-  title: string;
-  authors: string;
-  source: string;
-  pubyear: string;
-  doi: string;
-  claim: string;
-  evidence: string;
-  moderationStatus?: string;
-  analysisStatus?: string;
-  [key: string]: unknown;
-}
+// 移除了本地的 Article 类型定义
 
 interface ModeratorDashboardProps {
-  articles: ArticlesInterface[];
+  articles: Article[];
 }
 
 const ModeratorDashboard: React.FC<ModeratorDashboardProps> = ({ articles }) => {
-  // 1. 60 行：把 any 换成 Article[]
-  const [articlesState, setArticlesState] = useState<Article[]>([]);
-  
-  // 2. 81 行：把 articlesState 加进依赖数组
-  useEffect(() => {
-    // 你原来的逻辑
-  }, [articlesState]);   // ← 这里补上
-  
-  const [selected, setSelected] = useState<ArticlesInterface | null>(
+  const [articlesState, setArticlesState] = useState<Article[]>(articles);
+  const [selected, setSelected] = useState<Article | null>(
     articles && articles.length > 0 ? articles[0] : null
   );
   const [checkA, setCheckA] = useState(false);
@@ -76,17 +46,16 @@ const ModeratorDashboard: React.FC<ModeratorDashboardProps> = ({ articles }) => 
         }
         const data = await res.json();
         if (Array.isArray(data)) {
-          const mappedData = data.map((a: any) => ({
-            id: a._id,
+          const mappedData: Article[] = data.map((a: any) => ({
+            _id: a.id,
             title: a.title,
-            authors: Array.isArray(a.authors) ? a.authors.join(", ") : String(a.authors || ""),
-            source: a.source,
-            pubyear: a.pubyear,
+            authors: Array.isArray(a.authors) ? a.authors : String(a.authors || "").split(',').map(s => s.trim()),
+            journal: a.source,
+            year: Number(a.pubyear),
             doi: a.doi,
             claim: a.claim,
             evidence: a.evidence,
-            moderationStatus: a.moderationStatus,
-            analysisStatus: a.analysisStatus,
+            status: a.moderationStatus,
           }));
           setArticlesState(mappedData);
           if (mappedData.length > 0) setSelected(mappedData[0]);
@@ -107,7 +76,7 @@ const ModeratorDashboard: React.FC<ModeratorDashboardProps> = ({ articles }) => 
     try {
       const token = document.cookie.split(';').map(s=>s.trim()).find(s=>s.startsWith('speed_token='))?.split('=')[1];
       if (!token || !selected) return;
-      await fetch(`${API_BASE_URL}/api/articles/${selected.id}/moderate`, {
+      await fetch(`${API_BASE_URL}/api/articles/${selected._id}/moderate`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ status: 'approved' })
@@ -123,7 +92,7 @@ const ModeratorDashboard: React.FC<ModeratorDashboardProps> = ({ articles }) => 
     try {
       const token = document.cookie.split(';').map(s=>s.trim()).find(s=>s.startsWith('speed_token='))?.split('=')[1];
       if (!token || !selected) return;
-      await fetch(`${API_BASE_URL}/api/articles/${selected.id}/moderate`, {
+      await fetch(`${API_BASE_URL}/api/articles/${selected._id}/moderate`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ status: 'rejected', reason })
@@ -145,14 +114,14 @@ const ModeratorDashboard: React.FC<ModeratorDashboardProps> = ({ articles }) => 
         {articlesState.length > 0 ? (
           articlesState.map((a) => (
             <div
-              key={a.id}
+              key={a._id}
               onClick={() => setSelected(a)}
               className={`${styles.article} ${
-                selected?.id === a.id ? styles.active : ""
+                selected?._id === a._id ? styles.active : ""
               }`}
             >
               <p className={styles.articleTitle}>{a.title}</p>
-              <p className={styles.articleAuthors}>Author(s): {a.authors}</p>
+              <p className={styles.articleAuthors}>Author(s): {a.authors.join(', ')}</p>
             </div>
           ))
         ) : (
@@ -169,15 +138,15 @@ const ModeratorDashboard: React.FC<ModeratorDashboardProps> = ({ articles }) => 
           <div className={styles.meta}>
             <div className={styles.metaItem}>
               <span className={styles.metaLabel}>Authors</span>
-              <span className={styles.metaValue}>{selected.authors}</span>
+              <span className={styles.metaValue}>{selected.authors.join(', ')}</span>
             </div>
             <div className={styles.metaItem}>
               <span className={styles.metaLabel}>Source</span>
-              <span className={styles.metaValue}>{selected.source}</span>
+              <span className={styles.metaValue}>{selected.journal}</span>
             </div>
             <div className={styles.metaItem}>
               <span className={styles.metaLabel}>Publication Year</span>
-              <span className={styles.metaValue}>{selected.pubyear}</span>
+              <span className={styles.metaValue}>{selected.year}</span>
             </div>
             <div className={styles.metaItem}>
               <span className={styles.metaLabel}>DOI</span>
