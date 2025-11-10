@@ -25,13 +25,42 @@
 
 ## 第二步：部署后端 API
 
-### 选项 A: 使用 Railway (推荐)
+### 选项 A: 使用 Render (推荐 - 免费层可用) ⭐
+
+**Render 提供免费层，适合小型项目和学习使用。**
+
+1. 访问 https://render.com 并登录（使用 GitHub 账户）
+2. 点击 "New" -> "Web Service"
+3. 连接你的 GitHub 仓库
+4. 配置项目：
+   - **Name**: speed-backend
+   - **Root Directory**: `backend`
+   - **Environment**: Node
+   - **Build Command**: `npm install && npm run build`
+   - **Start Command**: `npm start`
+   - **Plan**: 选择 **Free** 免费计划
+5. 添加环境变量：
+   ```
+   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/speed?retryWrites=true&w=majority
+   JWT_SECRET=your-strong-random-secret-key-here
+   PORT=5000
+   NODE_ENV=production
+   CORS_ORIGIN=https://your-frontend.vercel.app
+   ```
+6. 点击 "Create Web Service"
+7. 部署完成后，获取后端 URL (例如: `https://speed-backend.onrender.com`)
+
+**注意**: Render 免费层服务在 15 分钟无活动后会休眠，首次访问可能需要等待几秒唤醒。
+
+### 选项 B: 使用 Railway (付费，但提供 $5 免费额度)
+
+**Railway 提供 $5 免费额度，超出后按使用量付费。**
 
 1. 访问 https://railway.app 并登录
 2. 点击 "New Project" -> "Deploy from GitHub repo"
 3. 选择你的 GitHub 仓库
 4. 设置根目录为 `backend`
-5. 配置环境变量：
+5. 配置环境变量（同 Render）：
    ```
    MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/speed?retryWrites=true&w=majority
    JWT_SECRET=your-strong-random-secret-key-here
@@ -42,20 +71,7 @@
 6. Railway 会自动检测 Node.js 项目并部署
 7. 部署完成后，获取后端 URL (例如: `https://your-app.railway.app`)
 
-### 选项 B: 使用 Render
-
-1. 访问 https://render.com 并登录
-2. 点击 "New" -> "Web Service"
-3. 连接你的 GitHub 仓库
-4. 配置：
-   - **Name**: speed-backend
-   - **Root Directory**: backend
-   - **Environment**: Node
-   - **Build Command**: `npm install && npm run build`
-   - **Start Command**: `npm start`
-5. 添加环境变量（同 Railway）
-6. 点击 "Create Web Service"
-7. 部署完成后，获取后端 URL
+**注意**: Railway 免费额度有限，适合短期测试。生产环境建议使用 Render 免费层或其他平台。
 
 ## 第三步：部署前端到 Vercel
 
@@ -66,13 +82,22 @@
 3. 导入你的 GitHub 仓库
 4. 选择仓库并点击 "Import"
 
-### 2. 配置项目设置
+### 2. 配置项目设置（重要！）
 
-- **Framework Preset**: Next.js
-- **Root Directory**: `frontend`
-- **Build Command**: `npm run build` (自动检测)
-- **Output Directory**: `.next` (自动检测)
-- **Install Command**: `npm install` (自动检测)
+**关键步骤：设置 Root Directory**
+
+在 **Configure Project** 页面：
+
+1. **Framework Preset**: Next.js (应该自动检测)
+2. **Root Directory**: 
+   - 点击 **Edit** 按钮
+   - **输入 `frontend`** (这是关键！)
+   - 必须设置，否则会报 "No Next.js version detected" 错误
+3. **Build Command**: `npm run build` (自动检测)
+4. **Output Directory**: `.next` (自动检测)
+5. **Install Command**: `npm install` (自动检测)
+
+**注意**: 如果不设置 Root Directory，Vercel 会在仓库根目录查找 Next.js 项目，导致构建失败。
 
 ### 3. 配置环境变量
 
@@ -96,16 +121,24 @@ NEXT_PUBLIC_API_BASE_URL=https://your-backend-api.railway.app
 
 部署前端后，需要更新后端的 CORS 配置：
 
-1. 在后端部署平台 (Railway/Render) 的环境变量中，更新 `CORS_ORIGIN`:
-   ```
-   CORS_ORIGIN=https://your-frontend.vercel.app
-   ```
-   或者多个域名（逗号分隔）:
-   ```
-   CORS_ORIGIN=https://your-frontend.vercel.app,https://your-custom-domain.com
-   ```
+1. **Render**: 
+   - 进入项目设置 -> Environment
+   - 更新 `CORS_ORIGIN` 环境变量
+   - 点击 "Save Changes"，自动重新部署
 
-2. 重启后端服务以应用更改
+2. **Railway**: 
+   - 进入项目设置 -> Variables
+   - 更新 `CORS_ORIGIN` 环境变量
+   - 服务会自动重新部署
+
+**CORS_ORIGIN 值**:
+```
+CORS_ORIGIN=https://your-frontend.vercel.app
+```
+或者多个域名（逗号分隔）:
+```
+CORS_ORIGIN=https://your-frontend.vercel.app,https://your-custom-domain.com
+```
 
 ## 环境变量总结
 
