@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Article, BibEntry } from "../models/Article";
 import { parseBibTeX, convertBibEntryToArticle } from "../utils/bibtex";
 import styles from "../styles/Form.module.scss";
 

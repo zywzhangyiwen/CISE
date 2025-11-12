@@ -15,35 +15,43 @@
 
 ### 步骤 2: 部署后端 (2 分钟)
 
-#### 使用 Railway (推荐)
+#### 使用 Render (推荐 - 免费) ⭐
 
-1. 访问 https://railway.app 并使用 GitHub 登录
-2. 点击 "New Project" -> "Deploy from GitHub repo"
-3. 选择你的仓库
-4. 在项目设置中：
-   - 设置根目录: `backend`
-   - 添加环境变量:
-     ```
-     MONGODB_URI=你的MongoDB连接字符串
-     JWT_SECRET=随机生成的密钥（使用下面的命令生成）
-     PORT=5000
-     NODE_ENV=production
-     ```
-5. 生成 JWT_SECRET:
+1. 访问 https://render.com 并使用 GitHub 登录
+2. 点击 "New" -> "Web Service"
+3. 连接你的 GitHub 仓库
+4. 配置项目:
+   - Name: `speed-backend`
+   - Root Directory: `backend`
+   - Environment: `Node`
+   - Build Command: `npm install && npm run build`
+   - Start Command: `npm start`
+   - Plan: 选择 **Free** 免费计划
+5. 添加环境变量:
+   ```
+   MONGODB_URI=你的MongoDB连接字符串
+   JWT_SECRET=随机生成的密钥（使用下面的命令生成）
+   PORT=5000
+   NODE_ENV=production
+   ```
+6. 生成 JWT_SECRET:
    ```bash
    # Windows PowerShell
    [Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(32))
    ```
-6. 部署完成后，复制后端 URL (例如: `https://your-app.railway.app`)
+7. 点击 "Create Web Service"
+8. 部署完成后，复制后端 URL (例如: `https://speed-backend.onrender.com`)
+
+**注意**: Render 免费层在 15 分钟无活动后会休眠，首次访问需要等待几秒唤醒。
 
 ### 步骤 3: 部署前端 (1 分钟)
 
 1. 访问 https://vercel.com 并使用 GitHub 登录
 2. 点击 "Add New..." -> "Project"
 3. 导入你的 GitHub 仓库
-4. 配置项目:
+4. **重要：配置项目设置**:
    - Framework Preset: Next.js
-   - Root Directory: `frontend`
+   - **Root Directory: 点击 Edit，输入 `frontend`** ⚠️ 必须设置！
    - 添加环境变量:
      ```
      NEXT_PUBLIC_API_BASE_URL=你的后端URL（从步骤2）
@@ -51,14 +59,16 @@
 5. 点击 "Deploy"
 6. 部署完成后，复制前端 URL (例如: `https://your-app.vercel.app`)
 
+**如果遇到 "No Next.js version detected" 错误，查看 [VERCEL_SETUP.md](./VERCEL_SETUP.md)**
+
 ### 步骤 4: 更新后端 CORS (1 分钟)
 
-1. 回到 Railway 项目设置
-2. 更新环境变量 `CORS_ORIGIN`:
+1. 回到 Render 项目设置
+2. 在 Environment 部分，更新环境变量 `CORS_ORIGIN`:
    ```
    CORS_ORIGIN=你的前端URL（从步骤3）
    ```
-3. 重启服务
+3. 点击 "Save Changes"，服务会自动重新部署
 
 ### 完成！
 
