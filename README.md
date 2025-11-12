@@ -66,14 +66,18 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:5000
 
 ## 部署平台
 
-- **前端**: Vercel (https://vercel.com)
-- **后端**: Railway (https://railway.app) 或 Render (https://render.com)
-- **数据库**: MongoDB Atlas (https://cloud.mongodb.com)
+- **前端**: Vercel (https://vercel.com) - 免费
+- **后端**: Render (https://render.com) - 免费层 ⭐ 推荐 或 Railway (https://railway.app) - $5免费额度
+- **数据库**: MongoDB Atlas (https://cloud.mongodb.com) - 免费层
+
+**免费托管选项**: 查看 [FREE_HOSTING_OPTIONS.md](./FREE_HOSTING_OPTIONS.md) 了解所有免费后端托管选项
 
 ## 文档
 
 - [部署指南](./DEPLOYMENT.md) - 详细的部署步骤和说明
 - [快速开始](./QUICK_START.md) - 5 分钟快速部署
+- [Vercel 设置指南](./VERCEL_SETUP.md) - Vercel 部署问题解决
+- [免费托管选项](./FREE_HOSTING_OPTIONS.md) - 免费后端托管平台对比
 - [环境变量配置](./ENV_VARIABLES.md) - 环境变量详细说明
 - [部署检查清单](./DEPLOYMENT_CHECKLIST.md) - 部署检查清单
 
